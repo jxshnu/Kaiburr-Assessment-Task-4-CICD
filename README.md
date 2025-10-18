@@ -34,7 +34,7 @@ curl -X PUT "http://localhost:8080/api/health-checks"   -H "Content-Type: applic
 ```
 
 **Result Screenshot:**
-(create-result.png)
+![Create Result](results/create-result.png)
 
 ---
 
@@ -45,8 +45,7 @@ curl "http://localhost:8080/api/health-checks/<YOUR_ID_HERE>"
 ```
 
 
-(get-result.png)
-
+![Get Result](results/get-result.png)
 ---
 
 ### 3. Demonstrate Security Validation
@@ -56,7 +55,7 @@ curl -v -X PUT "http://localhost:8080/api/health-checks"   -H "Content-Type: app
 ```
 
 **Result Screenshot:**
-(security-result.png)
+![Security Validation](results/security-result.png)
 
 ---
 
@@ -67,7 +66,7 @@ curl -v -X DELETE "http://localhost:8080/api/health-checks/<YOUR_ID_HERE>"
 ```
 
 **Result Screenshot:**
-(delete-result.png)
+![Delete Result](results/delete-result.png)
 
 ---
 
