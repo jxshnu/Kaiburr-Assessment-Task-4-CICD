@@ -34,7 +34,7 @@ curl -X PUT "http://localhost:8080/api/health-checks"   -H "Content-Type: applic
 ```
 
 **Result Screenshot:**
-![Create Task Result](results/create-result.png)
+![Create Task Result](main/create-result.png)
 
 ---
 
@@ -45,7 +45,7 @@ curl "http://localhost:8080/api/health-checks/<YOUR_ID_HERE>"
 ```
 
 **Result Screenshot:**
-![Get Task Result](results/get-result.png)
+![Get Task Result](main/get-result.png)
 
 ---
 
@@ -56,7 +56,7 @@ curl -v -X PUT "http://localhost:8080/api/health-checks"   -H "Content-Type: app
 ```
 
 **Result Screenshot:**
-![Security Validation Result](results/security-result.png)
+![Security Validation Result](main/security-result.png)
 
 ---
 
@@ -67,7 +67,7 @@ curl -v -X DELETE "http://localhost:8080/api/health-checks/<YOUR_ID_HERE>"
 ```
 
 **Result Screenshot:**
-![Delete Task Result](results/delete-result.png)
+![Delete Task Result](main/delete-result.png)
 
 ---
 
