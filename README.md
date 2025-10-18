@@ -34,7 +34,7 @@ curl -X PUT "http://localhost:8080/api/health-checks"   -H "Content-Type: applic
 ```
 
 **Result Screenshot:**
-![Create Task Result](Java-REST-API-MongoDB-Backend /create-result.png)
+(Java-REST-API-MongoDB-Backend /create-result.png)
 
 ---
 
@@ -45,7 +45,7 @@ curl "http://localhost:8080/api/health-checks/<YOUR_ID_HERE>"
 ```
 
 **Result Screenshot:**
-![Get Task Result](Java-REST-API-MongoDB-Backend /get-result.png)
+(Java-REST-API-MongoDB-Backend /get-result.png)
 
 ---
 
@@ -56,7 +56,7 @@ curl -v -X PUT "http://localhost:8080/api/health-checks"   -H "Content-Type: app
 ```
 
 **Result Screenshot:**
-![Security Validation Result](Java-REST-API-MongoDB-Backend /security-result.png)
+(Java-REST-API-MongoDB-Backend /security-result.png)
 
 ---
 
@@ -67,7 +67,7 @@ curl -v -X DELETE "http://localhost:8080/api/health-checks/<YOUR_ID_HERE>"
 ```
 
 **Result Screenshot:**
-![Delete Task Result](Java-REST-API-MongoDB-Backend /delete-result.png)
+(Java-REST-API-MongoDB-Backend /delete-result.png)
 
 ---
 
