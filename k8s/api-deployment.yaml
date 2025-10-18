@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: it-ops-api-deployment
+  namespace: health-checks
+  labels:
+    app: it-ops-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: it-ops-api
+  template:
+    metadata:
+      labels:
+        app: it-ops-api
+    spec:
+      serviceAccountName: health-check-sa # Use the ServiceAccount with specific permissions
+      containers:
+        - name: it-ops-api-container
+          # IMPORTANT: Replace this with the actual path to your built image in your container registry
+          image: it-ops-health-check-api:v1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
