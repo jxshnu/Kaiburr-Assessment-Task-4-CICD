@@ -34,7 +34,7 @@ curl -X PUT "http://localhost:8080/api/health-checks"   -H "Content-Type: applic
 ```
 
 **Result Screenshot:**
-(Java-REST-API-MongoDB-Backend /create-result.png)
+Java-REST-API-MongoDB-Backend /create-result.png
 
 ---
 
