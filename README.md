@@ -44,7 +44,7 @@ curl -X PUT "http://localhost:8080/api/health-checks"   -H "Content-Type: applic
 curl "http://localhost:8080/api/health-checks/<YOUR_ID_HERE>"
 ```
 
-**Result Screenshot:**
+
 (get-result.png)
 
 ---
