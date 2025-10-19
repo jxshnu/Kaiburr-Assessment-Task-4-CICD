@@ -1,143 +1,195 @@
-# Kaiburr Assessment - Task 1: Java REST API & MongoDB Backend
+ Kaiburr Assessment - Task 2: Kubernetes Deployment & Cloud-Native Execution
 
-This repository contains the complete, runnable source code for **Task 1 of the Kaiburr Technical Assessment**.  
-The project is a **production-ready, secure Java Spring Boot application** that provides a RESTful API for managing “task” objects, with all data persisted in a **MongoDB** database.
+This repository contains the complete solution for **Task 2 of the Kaiburr Technical Assessment**.  
+It takes the **Java REST API from Task 1**, containerizes it, and deploys it to a **Kubernetes cluster**, transforming it into a **secure, cloud-native application**.
 
-The application is built not just to meet the requirements, but to **showcase best practices** in modern backend development — focusing on **security**, **maintainability**, and **clean architecture**.
 
----
 
-## 🚀 Key Features & Professional Approach
+ Overview
 
-### 🔒 Robust Security First
-Security is the primary concern. The API includes a critical validation layer that:
-- **Prevents Shell Injection:** Rejects commands containing shell metacharacters (`;`, `|`, `&&`) to mitigate vulnerabilities.
-- **Uses an Allow-list:** Only permits explicitly approved commands (`ping`, `nslookup`, etc.), preventing arbitrary code execution.
+The core of this task is implementing a **secure, dynamic execution model** where shell commands are executed inside **temporary, isolated pods** that the application creates and manages programmatically.
 
-### 🏗️ Enterprise-Grade Architecture
-Implements a **multi-layered architecture** (Controller → Service → Repository) for clean separation of concerns, ensuring scalability, testability, and maintainability.
+This project demonstrates not just functionality but **enterprise-grade cloud-native design**, showcasing best practices for:
+- Security
+- Resource lifecycle management
+- Stateful data persistence
+- Declarative infrastructure (GitOps-ready)
 
-### ⚙️ Centralized Exception Handling
-A global `@ControllerAdvice` handles all exceptions uniformly, returning clean API error responses instead of stack traces.
 
-### 🌍 Seamless Environment Configuration
-Uses **Spring Profiles** to handle multiple environments (local and Kubernetes) without any code changes.
 
----
+ Key Features & Professional Cloud-Native Approach
 
-## 💻 Live Demonstration of API Functionality
+ True Cloud-Native Execution Model
+Instead of running shell commands on the main server (a major security risk), the application uses the **Kubernetes Java Client** to:
+- Dynamically create **ephemeral Jobs**.
+- Run each command in a **temporary busybox container**.
+- Retrieve logs securely.
+- Automatically delete the Job and Pod after completion.
 
-### 1. Create a New Task
-**Request:**
+Each command runs in complete isolation — ensuring maximum security.
+
+
+
+ Automated Resource Lifecycle Management
+The application handles the **entire lifecycle** of Kubernetes Jobs:
+- Creates resources on-demand.
+- Fetches results (logs).
+- Cleans up automatically after execution.
+  
+This prevents resource leaks and maintains a clean cluster — following the principles of **operational excellence**.
+
+
+
+ Persistent Data Storage
+MongoDB runs with a **PersistentVolumeClaim (PVC)**, guaranteeing data survives:
+- Pod restarts
+- Node failures
+- Application redeployments
+
+This ensures **stateful reliability** in a cloud environment.
+
+
+
+ Declarative Infrastructure (GitOps Ready)
+All Kubernetes resources — including:
+- Namespace  
+- Deployments  
+- Services  
+- Roles / ServiceAccounts  
+- PersistentVolumeClaims  
+
+are defined inside the [`k8s/`](./k8s) directory as YAML manifests.  
+This makes the setup **fully reproducible**, version-controlled, and **GitOps compliant**.
+
+
+
+  Secure by Design
+Follows the **Principle of Least Privilege**:
+- Runs under a dedicated **ServiceAccount**.
+- Role-based permissions only allow creating, viewing, and deleting Jobs and reading Pod logs.
+- All actions restricted to the application’s namespace.
+
+
+
+  Live Demonstration of Kubernetes Functionality
+
+Add your **screenshots** under a folder named `images/` and link them below.
+
+
+
+ 1. Successful Deployment
+
+**Command:**
 ```bash
-curl -X PUT "http://localhost:8080/api/health-checks"   -H "Content-Type: application/json"   -d '{ "name": "Google Ping", "owner": "sriji", "command": "ping -c 4 google.com" }'
+kubectl get all -n health-checks
 ```
 
 **Result Screenshot:**
-![Create Result](results/create-result.png)
+![Kubernetes Deployment](images/deployment.png)
 
----
 
-### 2. Get a Task by ID
-**Request:**
+
+ 2.  Create a Task via the API
+
+**Command:**
 ```bash
-curl "http://localhost:8080/api/health-checks/<YOUR_ID_HERE>"
-```
-
-
-![Get Result](results/get-result.png)
----
-
-### 3. Demonstrate Security Validation
-**Request:**
-```bash
-curl -v -X PUT "http://localhost:8080/api/health-checks"   -H "Content-Type: application/json"   -d '{ "name": "Malicious Command", "owner": "hacker", "command": "echo hello; rm -rf /" }'
+ Replace <NODE_PORT> with the port from 'kubectl get all'
+curl -X PUT "http://localhost:<NODE_PORT>/api/health-checks"   -H "Content-Type: application/json"   -d '{ "name": "K8s Ping Test", "owner": "sriji", "command": "ping -c 4 google.com" }'
 ```
 
 **Result Screenshot:**
-![Security Validation](results/security-result.png)
+![Task Creation](images/create-task.png)
 
----
 
-### 4. Delete a Task
-**Request:**
+
+ 3.  Run the Task & Verify Execution
+
+**Commands:**
 ```bash
-curl -v -X DELETE "http://localhost:8080/api/health-checks/<YOUR_ID_HERE>"
+ Run the task (replace <NODE_PORT> and <ID>)
+curl -X PUT "http://localhost:<NODE_PORT>/api/health-checks/<YOUR_ID_HERE>/run"
+
+ Wait ~20 seconds, then get the results
+curl "http://localhost:<NODE_PORT>/api/health-checks/<YOUR_ID_HERE>"
 ```
 
 **Result Screenshot:**
-![Delete Result](results/delete-result.png)
+![Run & Verify Task](images/run-task.png)
+![Run & Verify Task](images/run-task2.png)
 
----
 
-## ⚙️ Local Setup & Running Instructions
 
-### Prerequisites
+  Local Deployment & Running Instructions (Optional)
+
+For reviewers who wish to replicate the full Kubernetes deployment locally.
+
+ Prerequisites
 - **Java JDK 21**
 - **Apache Maven 3.9+**
-- **Docker Desktop** (for MongoDB)
+- **Docker Desktop (with Kubernetes enabled)**
 
-### Steps to Run
+
+
+  Steps to Deploy
+
 1. **Clone the repository**
    ```bash
    git clone <your-repo-url>
    cd it-ops-health-check-api
    ```
 
-2. **Start MongoDB**
-   ```bash
-   docker run -d -p 27017:27017 --name my-mongo mongo:6.0
-   ```
-
-3. **Build the project**
+2. **Build the application JAR**
    ```bash
    mvn clean package
    ```
 
-4. **Run the application**
+3. **Build the Docker image**
    ```bash
-   java -jar target/it-ops-health-check-api-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
+   docker build -t it-ops-health-check-api:v1 .
    ```
 
-   The API will be available at:  
-   👉 `http://localhost:8080`
+4. **Update deployment manifest**
+   - Open `k8s/api-deployment.yaml`
+   - Ensure:
+     ```yaml
+     image: it-ops-health-check-api:v1
+     imagePullPolicy: Never
+     ```
 
----
+5. **Apply all Kubernetes manifests**
+   ```bash
+   kubectl apply -f k8s/
+   ```
 
-## 🧩 API Endpoint Summary
+6. **Check deployment status**
+   ```bash
+   kubectl get all -n health-checks
+   ```
 
-| Method | Endpoint | Description |
-|:-------|:----------|:-------------|
-| **GET** | `/api/health-checks` | Retrieve all task objects |
-| **GET** | `/api/health-checks/{id}` | Retrieve a single task by ID |
-| **PUT** | `/api/health-checks` | Create a new task |
-| **DELETE** | `/api/health-checks/{id}` | Delete a task by ID |
 
----
 
-## 🗂️ Project Structure
+ Project Structure
 
 ```
 it-ops-health-check-api/
+├── Dockerfile
 ├── pom.xml
+├── k8s/
+│   ├── api-deployment.yaml
+│   ├── api-service.yaml
+│   ├── mongodb.yaml
+│   ├── namespace.yaml
+│   └── role.yaml
 └── src/
-    └── 
-        ├── java/com/example/itopshealthcheck/
-        │   ├── ItOpsHealthCheckApiApplication.java
-        │   ├── config/           # Profile-based configurations
-        │   ├── controller/       # REST API layer
-        │   ├── exception/        # Global exception handling
-        │   ├── model/            # MongoDB data models
-        │   ├── repository/       # Data access layer
-        │   └── service/          # Business logic layer
-        └── resources/
-            ├── application.properties
-            ├── application-local.properties
-            └── application-kubernetes.properties
+    └── main/java/com/example/itopshealthcheck/
+        ├── controller/
+        ├── service/
+        ├── repository/
+        └── model/
 ```
 
----
 
-## 🧾 License
+
+ License
 This project is created as part of the **Kaiburr Technical Assessment**.  
-You are free to view, clone, and use it for educational or review purposes.
+You may view, clone, and use it for **educational or review purposes**.
