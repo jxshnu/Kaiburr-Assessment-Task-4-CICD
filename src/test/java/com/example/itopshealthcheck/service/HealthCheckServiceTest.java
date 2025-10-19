@@ -4,6 +4,8 @@ import com.example.itopshealthcheck.dto.HealthCheckRequest;
 import com.example.itopshealthcheck.exception.InvalidCommandException;
 import com.example.itopshealthcheck.model.HealthCheck;
 import com.example.itopshealthcheck.repository.HealthCheckRepository;
+import io.kubernetes.client.openapi.apis.BatchV1Api;
+import io.kubernetes.client.openapi.apis.CoreV1Api;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,7 +52,6 @@ class HealthCheckServiceTest {
         savedHealthCheck.setCommand(request.getCommand());
         savedHealthCheck.setOwner(request.getOwner());
 
-
         // When the repository's save method is called, return our mock object
         when(healthCheckRepository.save(any(HealthCheck.class))).thenReturn(savedHealthCheck);
 
@@ -89,4 +90,4 @@ class HealthCheckServiceTest {
 
         assertTrue(exception.getMessage().contains("not whitelisted"));
     }
-}HealthCheckServiceTest.java
+}
