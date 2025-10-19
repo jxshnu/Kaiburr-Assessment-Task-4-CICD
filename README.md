@@ -123,7 +123,7 @@ curl "http://localhost:<NODE_PORT>/api/health-checks/<YOUR_ID_HERE>"
 
 For reviewers who wish to replicate the full Kubernetes deployment locally.
 
- 🔧 Prerequisites
+ Prerequisites
 - **Java JDK 21**
 - **Apache Maven 3.9+**
 - **Docker Desktop (with Kubernetes enabled)**
@@ -190,6 +190,6 @@ it-ops-health-check-api/
 
 
 
- 🧾 License
+ License
 This project is created as part of the **Kaiburr Technical Assessment**.  
 You may view, clone, and use it for **educational or review purposes**.
