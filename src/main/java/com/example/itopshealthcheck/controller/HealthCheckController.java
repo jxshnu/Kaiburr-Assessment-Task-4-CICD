@@ -1,5 +1,6 @@
 package com.example.itopshealthcheck.controller;
 
+import com.example.itopshealthcheck.dto.HealthCheckRequest;
 import com.example.itopshealthcheck.model.HealthCheck;
 import com.example.itopshealthcheck.service.HealthCheckService;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/health-checks")
-@CrossOrigin(origins = "*") // <-- ADD THIS LINE
+@CrossOrigin(origins = "*")
 public class HealthCheckController {
 
     private final HealthCheckService healthCheckService;
@@ -30,9 +31,10 @@ public class HealthCheckController {
         return ResponseEntity.ok(healthCheckService.getHealthCheckById(id));
     }
 
+    // This endpoint now accepts the HealthCheckRequest DTO instead of the HealthCheck entity.
     @PutMapping
-    public ResponseEntity<HealthCheck> createHealthCheck(@RequestBody HealthCheck healthCheck) {
-        HealthCheck createdHealthCheck = healthCheckService.createHealthCheck(healthCheck);
+    public ResponseEntity<HealthCheck> createHealthCheck(@RequestBody HealthCheckRequest healthCheckRequest) {
+        HealthCheck createdHealthCheck = healthCheckService.createHealthCheck(healthCheckRequest);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(createdHealthCheck.getId())
@@ -48,8 +50,7 @@ public class HealthCheckController {
 
     @PutMapping("/{id}/run")
     public ResponseEntity<HealthCheck> runHealthCheck(@PathVariable String id) {
-        // In a real application, the user would be extracted from the security context
-        String triggeredBy = "ui-user";
+        String triggeredBy = "api-user";
         HealthCheck updatedHealthCheck = healthCheckService.runHealthCheck(id, triggeredBy);
         return ResponseEntity.ok(updatedHealthCheck);
     }
