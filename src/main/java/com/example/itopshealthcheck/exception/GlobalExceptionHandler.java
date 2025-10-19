@@ -10,12 +10,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Date;
 
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    // This now uses a specific type instead of a generic wildcard, fixing the SonarCloud issue.
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+    public ResponseEntity<Map<String, Object>> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", new Date());
         body.put("message", ex.getMessage());
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidCommandException.class)
-    public ResponseEntity<?> invalidCommandException(InvalidCommandException ex, WebRequest request) {
+    public ResponseEntity<Map<String, Object>> invalidCommandException(InvalidCommandException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", new Date());
         body.put("message", ex.getMessage());
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> globalExceptionHandler(Exception ex, WebRequest request) {
+    public ResponseEntity<Map<String, Object>> globalExceptionHandler(Exception ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", new Date());
         body.put("message", "An unexpected error occurred");
