@@ -2,7 +2,6 @@ package com.example.itopshealthcheck.controller;
 
 import com.example.itopshealthcheck.model.HealthCheck;
 import com.example.itopshealthcheck.service.HealthCheckService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -12,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/health-checks")
+@CrossOrigin(origins = "*") // <-- ADD THIS LINE
 public class HealthCheckController {
 
     private final HealthCheckService healthCheckService;
@@ -49,7 +49,7 @@ public class HealthCheckController {
     @PutMapping("/{id}/run")
     public ResponseEntity<HealthCheck> runHealthCheck(@PathVariable String id) {
         // In a real application, the user would be extracted from the security context
-        String triggeredBy = "api-user";
+        String triggeredBy = "ui-user";
         HealthCheck updatedHealthCheck = healthCheckService.runHealthCheck(id, triggeredBy);
         return ResponseEntity.ok(updatedHealthCheck);
     }

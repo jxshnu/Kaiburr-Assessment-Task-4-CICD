@@ -1,0 +1,84 @@
+# This workflow builds, tests, analyzes, and containerizes the Java application.
+name: Build, Test, Analyze, and Push Docker Image
+
+# This workflow triggers on any push to the 'main' branch.
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  # Job 1: Build the Java application, run tests, and perform SonarCloud analysis.
+  test_build_and_analyze:
+    name: Build, Test & Analyze
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository code.
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          # Disabling shallow clone is required for SonarCloud analysis
+          fetch-depth: 0
+
+      # Step 2: Set up JDK 21, which is required to build the project.
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # Step 3: Cache SonarCloud packages to speed up future analyses.
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      # Step 4: Cache Maven packages to speed up the build process.
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      # Step 5: Build the project, run tests, and execute the SonarCloud scanner.
+      # The 'mvn verify' command runs the full lifecycle up to the verify phase (including tests).
+      # The 'sonar:sonar' goal then analyzes the code and test results.
+      - name: Build and analyze with Maven and SonarCloud
+        env:
+          # These secrets must be configured in your GitHub repository settings.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+
+  # Job 2: Build a Docker image and push it to Docker Hub.
+  build_and_push_docker:
+    name: Build and Push Docker Image
+    # This job will only run if the 'test_build_and_analyze' job completes successfully.
+    needs: test_build_and_analyze
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository code.
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Log in to Docker Hub.
+      # The username and token are read from repository secrets for security.
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 3: Build and push the Docker image.
+      # The image is tagged with 'latest' and a unique version based on the GitHub run number.
+      # This provides both a stable tag and a versioned artifact for each build.
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/it-ops-health-check-api:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/it-ops-health-check-api:1.${{ github.run_number }}
