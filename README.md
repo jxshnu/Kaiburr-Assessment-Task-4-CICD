@@ -72,11 +72,15 @@ Proof of Execution
 
 2. SonarCloud Dashboard
 ![SonarCloud Analysis](results/sonarcloud-report.png)
+here the test failed as i didnt include testing to cover the code. also the security failed bc i inluded New code
+@CrossOrigin(origins = "*") in HealthCheckController.java to connect to UI. or else it would have passed
+
 3. Docker Hub Repository
 ![Docker Hub Image Tags](results/dockerhub-tags.png)
    Notes
 - This repository contains a **copy** of the Java app (from Task 1), as required by the Kaiburr assessment.
 - In real-world setups, this workflow would be integrated directly into the main repository.
+
 
 
 
